@@ -78,7 +78,7 @@ function start() {
                 }
                 // determine if quantity to be purchased is less than the stock available
 
-                if (parseInt(answer.bid) < chosenItem.stock_quantity) {
+                if (parseInt(answer.bid) <= chosenItem.stock_quantity) {
                     //if quantity is less than the stock quantity, calculate the new stock quantity
                     var newStock = (chosenItem.stock_quantity) - (answer.bid);
                     console.log(newStock)
