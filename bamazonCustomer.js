@@ -40,16 +40,18 @@ function allProducts() {
 allProducts()
 
 */
+// the start function to display all the item in stock
 function start() {
     connection.query("SELECT * FROM products", function(err, res) {
       if (err) throw err;
-      // once you have the items, prompt the user for which they'd like to bid on
+      // once you have the items, prompt the user for which item they would like to purchase
       inquirer
         .prompt([
           {
             name: "choice",
             type: "rawlist",
             choices: function() {
+                // output all the items from the database and display to the choices as a list
                 var choiceArray = [];
                 for (var i = 0; i < res.length; i++) {
                   choiceArray.push(res[i].product_name);
@@ -75,15 +77,13 @@ function start() {
                 chosenItem = res[i];
               }
             }
-            // determine if bid was high enough
+            // determine if quantity to be purchased is less than the stock available
        
           if (parseInt(answer.bid) < chosenItem.stock_quantity ) {
-              // bid was high enough, so update db, let the user know, and start over
-              console.log(answer.bid)
-              console.log(chosenItem.stock_quantity);
+              //if quantity is less than the stock quantity, calculate the new stock quantity
 var newStock =(chosenItem.stock_quantity) -( answer.bid);
 console.log(newStock)
-                 
+               //update the database with the new database
                 var query = connection.query(
                     "UPDATE products SET ? WHERE ?",
                     [
@@ -96,15 +96,17 @@ console.log(newStock)
                     ],
                 function(err) {
                   if (err) throw err;
+                  // inform the user the order was placed succefully
                   console.log("order placed successfully!");
                   start();
                 }
               );
               console.log(query.sql);
             }
+            // if the quantity is more than the stock_quantity available then don't place the order
             else if(chosenItem.stock_quantity > parseInt(answer.bid)) 
             {
-              // bid wasn't high enough, so apologize and start over
+              // inform the user there no enough product and start again
               console.log("We don't have enoung products for your order...");
               start();
             }
